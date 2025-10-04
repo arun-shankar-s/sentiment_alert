@@ -93,5 +93,4 @@ Create an access token from your Hugging Face account settings.
 
 Set the access token as an environment variable:
 
-# Windows
 set HF_TOKEN=your_huggingface_token
