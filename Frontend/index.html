@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MiniGram - Hackathon Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1b1b1b;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+        .container {
+            width: 400px;
+            margin-top: 20px;
+        }
+        /* Top bar */
+        .top-bar {
+            background-color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            border-bottom: 1px solid #dbdbdb;
+        }
+        /* Post box */
+        .post {
+            background-color: white;
+            margin-top: 20px;
+            border: 1px solid #dbdbdb;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            font-weight: bold;
+        }
+        .post-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .post-image img {
+            width: 100%;
+        }
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            border-top: 1px solid #dbdbdb;
+            border-bottom: 1px solid #dbdbdb;
+        }
+        .post-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: #262626;
+        }
+        .comment-section {
+            padding: 10px;
+            display: none; /* hidden by default */
+        }
+        .comment-section input {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-bottom: 5px;
+            border: 1px solid #dbdbdb;
+            border-radius: 5px;
+        }
+        .comment-section button {
+            width: 100%;
+            padding: 8px;
+            background-color: #3897f0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .response {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+.sug {
+   display: block;
+    margin-top: 5px;
+    width: 100%;
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #dbdbdb;
+    background-color: white;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+
+        <!-- Post -->
+        <div class="post">
+            <div class="post-header">
+                <img src="icon.png" alt="Profile">
+                <span>Stride</span>
+            </div>
+            <div class="post-image">
+                <img src="post.png" alt="Post image">
+            </div>
+
+            <!-- Action buttons -->
+            <div class="post-actions">
+                <button id="likeBtn">Like</button>
+                <button id="commentBtn">Comment</button>
+                <button id="shareBtn">Share</button>
+            </div>
+
+            <!-- Comment section (hidden initially) -->
+<div class="comment-section" id="commentSection">
+    <input type="text" id="comment" placeholder="Write a comment..." required>
+
+    <!-- Suggested comments dropdown (hidden by default) -->
+    <select id="commentSuggestions" class="sug">
+        <option value="">-- Select a suggested comment --</option>
+        <option value="I love this product!">I love this product!</option>
+        <option value="The product I received is defective.">The product I received is defective</option> 
+        <option value="The delivery was late and I’m very frustrated!">The delivery was late and I’m very frustrated!</option> 
+        <option value="Great support team!">Great support team!</option>
+        <option value="Customer support didn’t respond to my query.">Customer support didn’t respond to my query.</option>
+        <option value="I am very happy with the service">I am very happy with the service</option>
+    </select>
+
+    <input type="text" id="tag" placeholder="Tag the company (e.g., @stride)" required>
+    <button id="submitBtn">Submit Comment</button>
+    <div class="response" id="response"></div>
+</div>
+
+
+        </div>
+    </div>
+
+    <script>
+        const commentBtn = document.getElementById("commentBtn");
+        const commentSection = document.getElementById("commentSection");
+        const submitBtn = document.getElementById("submitBtn");
+        const responseDiv = document.getElementById("response");
+        const commentInput = document.getElementById("comment");
+        const suggestionSelect = document.getElementById("commentSuggestions");
+
+        suggestionSelect.addEventListener("change", () => {
+            commentInput.value = suggestionSelect.value;
+        });
+
+
+
+        // Toggle comment section when Comment button is clicked
+        commentBtn.addEventListener("click", () => {
+            if (commentSection.style.display === "none" || commentSection.style.display === "") {
+                commentSection.style.display = "block";
+            } else {
+                commentSection.style.display = "none";
+            }
+        });
+
+        // Handle comment submission
+        submitBtn.addEventListener("click", async () => {
+            const comment = document.getElementById("comment").value;
+            const tag = document.getElementById("tag").value;
+
+            if (!comment || !tag) {
+                responseDiv.innerHTML = "<p style='color:red;'>Please enter both comment and tag!</p>";
+                return;
+            }
+
+            const res = await fetch("/comment", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `comment=${encodeURIComponent(comment)}&tag=${encodeURIComponent(tag)}`
+            });
+
+            const data = await res.json();
+            if (data.error) {
+                responseDiv.innerHTML = `<p style='color:red;'>Error: ${data.error}</p>`;
+            } else {
+                responseDiv.innerHTML = `
+                    
+                   ${data.suggested_reply}</p>
+                `;
+            }
+
+            document.getElementById("comment").value = "";
+            document.getElementById("tag").value = "";
+        });
+
+        // Optional Like/Share buttons (demo only)
+        document.getElementById("likeBtn").addEventListener("click", () => alert("You liked this post!"));
+        document.getElementById("shareBtn").addEventListener("click", () => alert("You shared this post!"));
+    </script>
+</body>
+</html>
