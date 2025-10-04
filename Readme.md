@@ -65,7 +65,7 @@ http://127.0.0.1:5000/
 ```
 
 * Submit comments using the clone app interface.
-* Suggested replies appear after a ## few seconds.
+* Suggested replies appear after a few seconds.
 
 ---
 
