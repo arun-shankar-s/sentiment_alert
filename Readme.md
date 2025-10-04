@@ -80,3 +80,15 @@ http://127.0.0.1:5000/dashboard.html
 * See **team-wise sentiment stats** and **overall summary**.
 
 ---
+
+
+4. Hugging Face Access
+
+The application uses Hugging Face pre-trained models. Make sure you:
+
+Sign up on Hugging Face
+ if you don’t have an account.
+
+Create an access token from your Hugging Face account settings.
+
+Set the access token as an environment variable:
