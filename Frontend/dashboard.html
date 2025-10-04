@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>📊 Feedback Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f8f9fa; }
+    h2 { margin-bottom: 15px; }
+    .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card {
+      padding: 15px; border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.2);
+      text-align: center; font-size: 18px; font-weight: bold;
+    }
+    .positive { background:#d4f8d4; border-left:6px solid green; }
+    .negative { background:#ffd6d6; border-left:6px solid red; }
+    .highlight { background:#fff5cc; border-left:6px solid orange; }
+    table { width: 100%; margin-top:20px; border-collapse: collapse; }
+    th, td { padding:10px; border:1px solid #ddd; text-align:center; }
+    th { background:#f2f2f2; }
+  </style>
+</head>
+<body>
+  <h2>📊 Feedback Dashboard</h2>
+
+  <!-- Summary -->
+  <div class="dashboard">
+    <div class="card positive" id="positiveCount">👍 Positive: 0</div>
+    <div class="card negative" id="negativeCount">👎 Negative: 0</div>
+    <div class="card highlight" id="topTeam">🏆 Top Team: None</div>
+  </div>
+
+  <!-- Team-wise Table -->
+  <h3>Team Breakdown</h3>
+  <table id="teamTable">
+    <thead>
+      <tr><th>Team</th><th>👍 Positive</th><th>👎 Negative</th><th>Total</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function loadStats() {
+      const res = await fetch("http://127.0.0.1:5000/stats");
+      const data = await res.json();
+
+      // Update summary
+      document.getElementById("positiveCount").innerText = `👍 Positive: ${data.total_positive}`;
+      document.getElementById("negativeCount").innerText = `👎 Negative: ${data.total_negative}`;
+      document.getElementById("topTeam").innerText = `🏆 Top Team: ${data.top_team.name} (${data.top_team.count})`;
+
+      // Update table
+      const tbody = document.querySelector("#teamTable tbody");
+      tbody.innerHTML = "";
+      for (let team in data.teams) {
+        let row = `
+          <tr>
+            <td>${team}</td>
+            <td>${data.teams[team].positive}</td>
+            <td>${data.teams[team].negative}</td>
+            <td>${data.teams[team].positive + data.teams[team].negative}</td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      }
+    }
+
+    // Auto-refresh every 5s
+    setInterval(loadStats, 5000);
+    loadStats();
+  </script>
+</body>
+</html>
