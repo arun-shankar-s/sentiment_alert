@@ -7,7 +7,7 @@ A **sentiment analysis dashboard** for customer support teams. Monitor comments,
 ## Features
 
 * Detects **positive and negative comments** automatically.
-* Suggests **replies for negative comments**.
+* Suggests **replies for comments**.
 * Tags the appropriate **team** based on comment context.
 * Dashboard shows **team-wise sentiment stats**.
 * Real-time alerts via **Slack integration**.
